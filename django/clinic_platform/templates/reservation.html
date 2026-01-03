@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservation - Clinique Médicale</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0 sticky-top">
+    <a href="{% url 'index' %}" class="navbar-brand p-0">
+        <h1 class="m-0 text-primary"><i class="fa fa-tooth me-2"></i>Clinique Médicale</h1>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto py-0">
+            <a href="{% url 'index' %}" class="nav-item nav-link">Accueil</a>
+            <a href="{% url 'reservation' %}" class="nav-item nav-link">Réservation</a>
+            <a href="{% url 'doctors' %}" class="nav-item nav-link">Médecins</a>
+            <a href="{% url 'about' %}" class="nav-item nav-link">À propos</a>
+            <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
+        </div>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn btn-primary rounded-pill py-2 px-4 ms-3 shadow-sm" 
+               style="background-color: #0d6efd !important; color: white !important; opacity: 1 !important;">
+                <i class="fas fa-user-circle me-2"></i>Tableau de Bord
+            </a>
+            
+            <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger rounded-pill py-2 px-4 ms-3 shadow-sm" 
+                        style="background-color: #dc3545 !important; color: white !important; border: none !important;">
+                    <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                </button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary rounded-pill py-2 px-4 ms-3 shadow-sm" 
+               style="background-color: #0d6efd !important; color: white !important;">
+                Connexion
+            </a>
+        {% endif %}
+    </div>
+</nav>
+
+    <div class="container-fluid bg-primary py-5 mb-5 hero-header">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 text-center text-lg-start">
+                    <h5 class="d-inline-block text-white text-uppercase border-bottom border-5" style="border-color: rgba(256, 256, 256, .3) !important;">Réservation</h5>
+                    <h1 class="display-4 text-white mb-md-4">Prenez Rendez-vous</h1>
+                    <p class="text-white mb-4 pb-2 lead">Planifiez votre consultation en quelques clics avec nos experts. Choisissez votre médecin et l'heure qui vous convient.</p>
+                </div>
+                <div class="col-lg-6 text-center text-lg-end">
+                    <img src="https://img.freepik.com/free-photo/calendar-planner-schedule-concept_53876-121286.jpg" 
+                         alt="Reservation" 
+                         class="img-fluid rounded shadow-lg"
+                         style="border: 5px solid rgba(255,255,255,0.2);">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="bg-white rounded p-5 shadow-lg border">
+                        <div class="text-center mb-5">
+                            <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5">Formulaire</h5>
+                            <h1 class="display-6">Réservez votre place</h1>
+                        </div>
+                        
+                        <form method="POST" action="{% url 'reservation' %}">
+                            {% csrf_token %} 
+                            
+                            <div class="row g-3">
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label text-muted">Médecin</label>
+                                    <select class="form-select bg-light border-0" name="doctor_name" id="doctorSelect" style="height: 55px;" required>
+                                        <option value="" data-specialty="">Choisir un médecin</option>
+                                        {% for doc in doctors %}
+                                            <option value="{{ doc.name }}" data-specialty="{{ doc.specialty }}">
+                                                {{ doc.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label text-muted">Spécialité</label>
+                                    <input type="text" class="form-control bg-light border-0" id="specialtyInput" placeholder="Sélection automatique" style="height: 55px;" readonly>
+                                </div>
+
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label text-muted">Date</label>
+                                    <input type="date" class="form-control bg-light border-0" name="date" style="height: 55px;" required>
+                                </div>
+
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label text-muted">Heure</label>
+                                    <input type="time" class="form-control bg-light border-0" name="time" style="height: 55px;" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label text-muted">Motif de consultation</label>
+                                    <input type="text" class="form-control bg-light border-0" name="reason" placeholder="Ex: Consultation générale, Douleur, Suivi..." style="height: 55px;" required>
+                                </div>
+
+                                <div class="col-12 mt-4">
+                                    <button class="btn btn-primary w-100 py-3" type="submit">
+                                        <i class="fas fa-calendar-check me-2"></i>Confirmer le Rendez-vous
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid bg-dark text-light mt-5 py-5">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-12 text-center">
+                    <p class="mb-4">© 2023 Clinique Médicale. Tous droits réservés.</p>
+                    <div>
+                        <a href="{% url 'index' %}" class="text-light text-decoration-none mx-2">Accueil</a> | 
+                        <a href="{% url 'contact' %}" class="text-light text-decoration-none mx-2">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'script.js' %}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const doctorSelect = document.getElementById('doctorSelect');
+            const specialtyInput = document.getElementById('specialtyInput');
+
+            // 1. Function to update specialty based on selection
+            function updateSpecialty() {
+                const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+                const specialty = selectedOption.getAttribute('data-specialty');
+                
+                if (specialty) {
+                    specialtyInput.value = specialty;
+                } else {
+                    specialtyInput.value = "";
+                }
+            }
+
+            // 2. Listen for changes on the dropdown
+            doctorSelect.addEventListener('change', updateSpecialty);
+
+            // 3. Handle Pre-selection from URL (if you clicked 'Réserver' on doctors page)
+            const urlParams = new URLSearchParams(window.location.search);
+            const preSelectedDoctor = urlParams.get('doctor');
+
+            if (preSelectedDoctor) {
+                // Loop through options to find the match
+                for (let i = 0; i < doctorSelect.options.length; i++) {
+                    if (doctorSelect.options[i].value === preSelectedDoctor) {
+                        doctorSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            // 4. Run once on page load to set initial state
+            updateSpecialty();
+        });
+    </script>
+</body>
+</html>

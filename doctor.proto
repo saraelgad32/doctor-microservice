@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package doctor;
+
+service DoctorController {
+    rpc GetDoctors (DoctorRequest) returns (DoctorList) {}
+}
+
+message DoctorRequest {
+    string specialty = 1;
+    string neighborhood = 2;
+}
+
+message DoctorData {
+    int32 id = 1;
+    string name = 2;
+    string specialty = 3;
+    string neighborhood = 4;
+    string phone = 5;  // <--- WE ADDED THIS LINE
+}
+
+message DoctorList {
+    repeated DoctorData doctors = 1;
+}

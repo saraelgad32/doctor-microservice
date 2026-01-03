@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - Clinique Médicale</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    
+    <style>
+        .service-item {
+            transition: .5s;
+            border: 1px solid #eef0f3;
+        }
+        .service-item:hover {
+            box-shadow: 0 0 30px #dddddd;
+            transform: translateY(-10px);
+            background-color: #fff !important;
+            border-color: var(--bs-primary);
+        }
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%; /* Makes it a circle */
+            background-color: var(--bs-primary);
+            margin-bottom: 20px;
+            transition: .5s;
+        }
+        .service-item:hover .service-icon {
+            background-color: #fff;
+            border: 2px solid var(--bs-primary);
+        }
+        .service-item:hover .service-icon i {
+            color: var(--bs-primary) !important; /* Turns icon blue on hover */
+        }
+    </style>
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0 sticky-top">
+    <a href="{% url 'index' %}" class="navbar-brand p-0">
+        <h1 class="m-0 text-primary"><i class="fa fa-tooth me-2"></i>Clinique Médicale</h1>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto py-0">
+            <a href="{% url 'index' %}" class="nav-item nav-link">Accueil</a>
+            <a href="{% url 'reservation' %}" class="nav-item nav-link">Réservation</a>
+            <a href="{% url 'doctors' %}" class="nav-item nav-link">Médecins</a>
+            <a href="{% url 'about' %}" class="nav-item nav-link">À propos</a>
+            <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
+        </div>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn btn-primary rounded-pill py-2 px-4 ms-3 shadow-sm" 
+               style="background-color: #0d6efd !important; color: white !important; opacity: 1 !important;">
+                <i class="fas fa-user-circle me-2"></i>Tableau de Bord
+            </a>
+            
+            <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger rounded-pill py-2 px-4 ms-3 shadow-sm" 
+                        style="background-color: #dc3545 !important; color: white !important; border: none !important;">
+                    <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                </button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary rounded-pill py-2 px-4 ms-3 shadow-sm" 
+               style="background-color: #0d6efd !important; color: white !important;">
+                Connexion
+            </a>
+        {% endif %}
+    </div>
+</nav>
+
+    <div class="container-fluid bg-primary py-5 mb-5 hero-header">
+        <div class="container py-5">
+            <div class="row justify-content-start align-items-center">
+                
+                <div class="col-lg-8 text-center text-lg-start">
+                    <h5 class="d-inline-block text-white text-uppercase border-bottom border-5" style="border-color: rgba(256, 256, 256, .3) !important;">Bienvenue</h5>
+                    <h1 class="display-1 text-white mb-md-4">Votre Santé, Notre Priorité</h1>
+                    <p class="text-white mb-4 pb-2 lead">
+                        Des soins de qualité supérieure avec une équipe médicale expérimentée et dévouée à votre bien-être.
+                    </p>
+                    
+                    <div class="d-flex align-items-center justify-content-center justify-content-lg-start pt-2">
+                        <a href="#services" class="btn btn-outline-light rounded-pill py-md-3 px-md-5 me-3">Nos Services</a>
+                        <a href="{% url 'reservation' %}" class="btn btn-light rounded-pill py-md-3 px-md-5">Réserver</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 d-none d-lg-block">
+                    <img src="https://img.freepik.com/free-photo/doctor-with-his-arms-crossed-white-background_1368-5790.jpg" 
+                         alt="Doctor Hero" 
+                         class="img-fluid rounded-circle shadow-lg"
+                         style="border: 5px solid rgba(255,255,255,0.2);">
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <section id="services" class="services-section py-5">
+        <div class="container">
+            <div class="text-center mx-auto mb-5" style="max-width: 500px;">
+                <h5 class="d-inline-block text-primary text-uppercase border-bottom border-5">Nos Services</h5>
+                <h1 class="display-4">Soins Médicaux Complets</h1>
+            </div>
+            <div class="row g-5">
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-item bg-white rounded d-flex flex-column align-items-center justify-content-center text-center p-4 h-100 shadow-sm">
+                        <div class="service-icon mb-4">
+                            <i class="fa fa-2x fa-user-md text-white"></i>
+                        </div>
+                        <h4 class="mb-3">Médecine Générale</h4>
+                        <p class="m-0 text-muted">Suivi complet et soins primaires pour toute la famille.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-item bg-white rounded d-flex flex-column align-items-center justify-content-center text-center p-4 h-100 shadow-sm">
+                        <div class="service-icon mb-4">
+                            <i class="fa fa-2x fa-heartbeat text-white"></i>
+                        </div>
+                        <h4 class="mb-3">Cardiologie</h4>
+                        <p class="m-0 text-muted">Diagnostic et traitement des maladies cardiovasculaires.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-item bg-white rounded d-flex flex-column align-items-center justify-content-center text-center p-4 h-100 shadow-sm">
+                        <div class="service-icon mb-4">
+                            <i class="fa fa-2x fa-procedures text-white"></i>
+                        </div>
+                        <h4 class="mb-3">Dermatologie</h4>
+                        <p class="m-0 text-muted">Soins experts pour la santé de votre peau.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-item bg-white rounded d-flex flex-column align-items-center justify-content-center text-center p-4 h-100 shadow-sm">
+                        <div class="service-icon mb-4">
+                            <i class="fa fa-2x fa-stethoscope text-white"></i>
+                        </div>
+                        <h4 class="mb-3">Analyses Médicales</h4>
+                        <p class="m-0 text-muted">Laboratoire moderne pour des résultats rapides et précis.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-item bg-white rounded d-flex flex-column align-items-center justify-content-center text-center p-4 h-100 shadow-sm">
+                        <div class="service-icon mb-4">
+                            <i class="fa fa-2x fa-tooth text-white"></i>
+                        </div>
+                        <h4 class="mb-3">Dentisterie</h4>
+                        <p class="m-0 text-muted">Soins dentaires complets pour un sourire éclatant.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-item bg-white rounded d-flex flex-column align-items-center justify-content-center text-center p-4 h-100 shadow-sm">
+                        <div class="service-icon mb-4">
+                            <i class="fa fa-2x fa-eye text-white"></i>
+                        </div>
+                        <h4 class="mb-3">Ophtalmologie</h4>
+                        <p class="m-0 text-muted">Examens de la vue et soins oculaires spécialisés.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-primary text-white text-center">
+        <div class="container">
+            <h2 class="mb-4">Besoin d'un rendez-vous ?</h2>
+            <p class="lead mb-4">Réservez votre consultation en ligne facilement et rapidement.</p>
+            <a href="{% url 'reservation' %}" class="btn btn-light btn-lg rounded-pill px-5">Prendre Rendez-vous</a>
+        </div>
+    </section>
+
+    <div class="container-fluid bg-dark text-light mt-5 py-5">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-6 col-md-6">
+                    <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 border-secondary mb-4">Contactez-nous</h4>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt text-primary me-3"></i>123 Rue de la Santé, Agadir, Maroc</p>
+                    <p class="mb-2"><i class="fa fa-envelope text-primary me-3"></i>info@clinique-medicale.ma</p>
+                    <p class="mb-0"><i class="fa fa-phone-alt text-primary me-3"></i>+212 5 28 00 00 00</p>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 border-secondary mb-4">Liens Rapides</h4>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-light mb-2" href="{% url 'index' %}"><i class="fa fa-angle-right me-2"></i>Accueil</a>
+                        <a class="text-light mb-2" href="{% url 'about' %}"><i class="fa fa-angle-right me-2"></i>À propos</a>
+                        <a class="text-light mb-2" href="{% url 'doctors' %}"><i class="fa fa-angle-right me-2"></i>Nos Médecins</a>
+                        <a class="text-light mb-2" href="{% url 'contact' %}"><i class="fa fa-angle-right me-2"></i>Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-light border-top border-secondary py-4">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-md-0">&copy; <a class="text-primary" href="#">Clinique Médicale</a>. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'script.js' %}"></script>
+</body>
+</html>

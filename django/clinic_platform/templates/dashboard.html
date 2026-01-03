@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord - Clinique Médicale</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    
+    <style>
+        .dashboard-card {
+            transition: 0.3s;
+            border: none;
+            border-radius: 15px;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+        .appt-item {
+            border-left: 5px solid #0d6efd;
+            background: #f8f9fa;
+            transition: 0.3s;
+        }
+        .appt-item:hover {
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        /* Overlap effect */
+        .dashboard-container {
+            margin-top: -100px; 
+            position: relative; 
+            z-index: 2;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0 sticky-top">
+        <a href="{% url 'index' %}" class="navbar-brand p-0">
+            <h1 class="m-0 text-primary"><i class="fa fa-tooth me-2"></i>Clinique Médicale</h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-0">
+                <a href="{% url 'index' %}" class="nav-item nav-link">Accueil</a>
+                <a href="{% url 'reservation' %}" class="nav-item nav-link">Réservation</a>
+                <a href="{% url 'doctors' %}" class="nav-item nav-link">Médecins</a>
+                <a href="{% url 'about' %}" class="nav-item nav-link">À propos</a>
+                <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
+            </div>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="btn btn-primary rounded-pill py-2 px-4 ms-3 shadow-sm" style="background-color: #0d6efd !important; color: white !important;">
+                    <i class="fas fa-user-circle me-2"></i>Tableau de Bord
+                </a>
+                <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger rounded-pill py-2 px-4 ms-3 shadow-sm" style="background-color: #dc3545 !important; color: white !important; border: none;">
+                        <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary rounded-pill py-2 px-4 ms-3 shadow-sm">Connexion</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container-fluid bg-primary py-5 mb-5" style="padding-bottom: 150px !important;">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h5 class="d-inline-block text-white text-uppercase border-bottom border-5" style="border-color: rgba(256, 256, 256, .3) !important;">Espace Patient</h5>
+                    <h1 class="display-4 text-white mb-0">Bonjour, {{ user.username }} !</h1>
+                    <p class="text-white mt-2 lead">Bienvenue sur votre tableau de bord personnel. Gérez votre santé en toute simplicité.</p>
+                </div>
+                <div class="col-lg-4 text-end">
+                    <a href="{% url 'profile' %}" class="btn btn-outline-light rounded-pill py-3 px-5">
+                        <i class="fas fa-user-edit me-2"></i>Mon Profil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container dashboard-container mb-5">
+        
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="bg-white rounded p-4 shadow-sm d-flex align-items-center justify-content-between dashboard-card">
+                    <div>
+                        <h5 class="text-muted mb-1">Rendez-vous Total</h5>
+                        <h2 class="mb-0 text-primary fw-bold">{{ appointments|length }}</h2>
+                    </div>
+                    <i class="fas fa-calendar-check fa-3x text-light-gray" style="color: #e9ecef;"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-white rounded p-4 shadow-sm d-flex align-items-center justify-content-between dashboard-card">
+                    <div>
+                        <h5 class="text-muted mb-1">Prochain RDV</h5>
+                        {% if appointments %}
+                            <h2 class="mb-0 text-success fw-bold">{{ appointments.0.date }}</h2>
+                        {% else %}
+                            <h4 class="mb-0 text-muted">Aucun</h4>
+                        {% endif %}
+                    </div>
+                    <i class="fas fa-clock fa-3x text-light-gray" style="color: #e9ecef;"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="bg-white rounded p-4 shadow-sm d-flex align-items-center justify-content-between dashboard-card">
+                    <div>
+                        <h5 class="text-muted mb-1">Messages</h5>
+                        <h2 class="mb-0 text-warning fw-bold">0</h2>
+                    </div>
+                    <i class="fas fa-envelope fa-3x text-light-gray" style="color: #e9ecef;"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <div class="bg-white rounded p-4 shadow-lg border-0 h-100">
+                    <h4 class="mb-4 text-primary"><i class="fas fa-star me-2"></i>Action Rapide</h4>
+                    
+                    <div class="text-center py-4">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3652/3652191.png" width="100" class="mb-3" alt="Calendar">
+                        <p class="text-muted">Besoin de consulter un médecin ?</p>
+                        <a href="{% url 'reservation' %}" class="btn btn-primary w-100 py-3 rounded-pill shadow-sm">
+                            <i class="fas fa-plus-circle me-2"></i>Nouveau Rendez-vous
+                        </a>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h5 class="mb-3">Informations Utiles</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-2"><i class="fas fa-phone-alt me-2 text-primary"></i> Urgence: 15</li>
+                        <li class="mb-2"><i class="fas fa-clinic-medical me-2 text-primary"></i> Clinique ouverte 24/7</li>
+                        <li><i class="fas fa-info-circle me-2 text-primary"></i> Arrivez 15min avant votre RDV</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="bg-white rounded p-4 shadow-sm border-0 h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0 text-primary"><i class="fas fa-history me-2"></i>Historique des Rendez-vous</h4>
+                        <span class="badge bg-primary rounded-pill">{{ appointments|length }} Réservations</span>
+                    </div>
+
+                    {% if appointments %}
+                        <div class="vstack gap-3">
+                            {% for appt in appointments %}
+                                <div class="appt-item p-3 rounded d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-circle p-3 me-3 text-primary">
+                                            <i class="fas fa-user-md fa-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-1 fw-bold">{{ appt.doctor_name }}</h5>
+                                            <p class="mb-0 text-muted small"><i class="fas fa-stethoscope me-1"></i> {{ appt.specialty }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <h6 class="mb-1 fw-bold text-dark">{{ appt.date }}</h6>
+                                        <span class="badge bg-light text-dark border border-secondary">{{ appt.time }}</span>
+                                        <span class="badge bg-success ms-2">Confirmé</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-times fa-4x text-muted mb-3 opacity-25"></i>
+                            <h5 class="text-muted">Aucun rendez-vous pour le moment.</h5>
+                            <p class="text-muted small">Vos futurs rendez-vous apparaîtront ici.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid bg-dark text-light mt-5 py-5">
+        <div class="container text-center">
+            <p class="mb-0">© 2023 Clinique Médicale. Tous droits réservés.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
