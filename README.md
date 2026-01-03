@@ -24,8 +24,8 @@ This project allows users to:
   - `static/` → CSS & JS files  
 
 ## Project Folder Structure
-'''
-project/
+
+```project/
 │ config.py
 │ doctor.proto
 │ doctor_pb2.py
@@ -70,8 +70,7 @@ project/
 │ ├─ register.html
 │ ├─ profile.html
 │ ├─ reservation.html
-│ └─ terms.html
-'''
+│ └─ terms.html```
 
 ##HOW TO USE?
 here:
