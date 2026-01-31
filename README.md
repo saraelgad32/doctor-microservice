@@ -110,8 +110,8 @@ PHASE 3: CONFIGURE THE PROJECT
 ---------------------------------------------------------------
 1. Open the file "config.py" in this folder using a text editor (Notepad or VS Code).
 2. Look for this line:
-   'server': r'WALIDD\SQLEXPRESS'
-3. Delete "WALIDD\SQLEXPRESS" and paste YOUR Server Name that you copied in Phase 2.
+   'server': r'WALIDD\SQLEXPRESS' ('WALIDD\SQLEXPRESS' is the Server Name of the machine )
+3. Delete "WALIDD\SQLEXPRES" and paste YOUR Server Name that you copied in Phase 2.
    Example: 'server': r'MY-LAPTOP\SQLEXPRESS'
 4. Save the file.
 
